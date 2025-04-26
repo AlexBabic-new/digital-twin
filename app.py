@@ -58,10 +58,7 @@ with tab1:
     data = fetch_all_readings()
     df = pd.DataFrame(data, columns=["ID", "Timestamp", "Temperature (°C)", "Humidity (%)", "pH"])
 
-    st.subheader("📦 Sensor Data Table")
-    st.dataframe(df)
-
-    # === ALERT SYSTEM BASED ON LAST ENTRY ===
+    # === ALERT SYSTEM ===
     if not df.empty:
         latest = df.iloc[-1]
 
@@ -75,6 +72,9 @@ with tab1:
             st.info(f"💧 Low humidity detected: {humidity}%")
         if ph < 5:
             st.warning(f"🧪 Warning: pH is too low! ({ph})")
+
+    st.subheader("📦 Sensor Data Table")
+    st.dataframe(df)
 
     st.subheader("📥 Export Sensor Data")
     csv = df.to_csv(index=False).encode('utf-8')
