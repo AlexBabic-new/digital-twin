@@ -96,3 +96,17 @@ with tab3:
         st.pyplot(fig)
     else:
         st.info("No data to plot yet.")
+            
+    st.subheader("📉 Humidity Over Time")
+
+    if not df.empty:
+        fig, ax = plt.subplots()
+        ax.plot(df["Timestamp"], df["Humidity (%)"], marker='o', color='skyblue')
+        ax.set_xlabel("Timestamp")
+        ax.set_ylabel("Humidity (%)")
+        ax.set_title("Humidity Trend")
+        ax.tick_params(axis='x', rotation=45)
+        st.pyplot(fig)
+    else:
+        st.info("No humidity data to plot yet.")
+
