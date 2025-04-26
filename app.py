@@ -59,12 +59,12 @@ with tab1:
     df = pd.DataFrame(data, columns=["ID", "Timestamp", "Temperature (°C)", "Humidity (%)", "pH"])
     
     # === ALERT SYSTEM BASED ON LAST ENTRY ===
-        if not df.empty:
-    latest = df.iloc[-1]  # poslednji unos
+    if not df.empty:
+        latest = df.iloc[-1]  # poslednji unos
 
-    temp = latest["Temperature (°C)"]
-    humidity = latest["Humidity (%)"]
-    ph = latest["pH"]
+        temp = latest["Temperature (°C)"]
+        humidity = latest["Humidity (%)"]
+        ph = latest["pH"]
 
     if temp > 40:
         st.error(f"🔥 ALERT: Temperature is too high! ({temp}°C)")
