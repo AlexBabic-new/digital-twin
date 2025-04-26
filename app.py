@@ -54,27 +54,27 @@ with tab1:
         st.success("Sensor data submitted and logged!")
         st.rerun()
 
-    # Refresh data after submission
+    # Refresh data
     data = fetch_all_readings()
     df = pd.DataFrame(data, columns=["ID", "Timestamp", "Temperature (°C)", "Humidity (%)", "pH"])
-    
+
+    st.subheader("📦 Sensor Data Table")
+    st.dataframe(df)
+
     # === ALERT SYSTEM BASED ON LAST ENTRY ===
     if not df.empty:
-        latest = df.iloc[-1]  # poslednji unos
+        latest = df.iloc[-1]
 
         temp = latest["Temperature (°C)"]
         humidity = latest["Humidity (%)"]
         ph = latest["pH"]
 
-    if temp > 40:
-        st.error(f"🔥 ALERT: Temperature is too high! ({temp}°C)")
-    if humidity < 30:
-        st.info(f"💧 Low humidity detected: {humidity}%")
-    if ph < 5:
-        st.warning(f"🧪 Warning: pH is too low! ({ph})")
-
-    st.subheader("📦 Sensor Data Table")
-    st.dataframe(df)
+        if temp > 40:
+            st.error(f"🔥 ALERT: Temperature is too high! ({temp}°C)")
+        if humidity < 30:
+            st.info(f"💧 Low humidity detected: {humidity}%")
+        if ph < 5:
+            st.warning(f"🧪 Warning: pH is too low! ({ph})")
 
     st.subheader("📥 Export Sensor Data")
     csv = df.to_csv(index=False).encode('utf-8')
@@ -110,8 +110,8 @@ with tab3:
         ax.tick_params(axis='x', rotation=45)
         st.pyplot(fig)
     else:
-        st.info("No data to plot yet.")
-            
+        st.info("No temperature data to plot yet.")
+
     st.subheader("📉 Humidity Over Time")
 
     if not df.empty:
@@ -124,4 +124,3 @@ with tab3:
         st.pyplot(fig)
     else:
         st.info("No humidity data to plot yet.")
-
