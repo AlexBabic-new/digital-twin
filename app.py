@@ -52,7 +52,7 @@ with tab1:
         insert_reading(temperature_input, humidity_input, ph_input)
         log_event(f"Manual input: T={temperature_input}, H={humidity_input}, pH={ph_input}")
         st.success("Sensor data submitted and logged!")
-        st.experimental_rerun()
+        st.rerun()
 
     # Refresh data after submission
     data = fetch_all_readings()
