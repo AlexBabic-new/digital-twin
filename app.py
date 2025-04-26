@@ -58,7 +58,7 @@ with tab1:
     data = fetch_all_readings()
     df = pd.DataFrame(data, columns=["ID", "Timestamp", "Temperature (°C)", "Humidity (%)", "pH"])
 
-    # === ALERT SYSTEM ===
+    # === ALERT SYSTEM (ispravno odmah ispod forme) ===
     if not df.empty:
         latest = df.iloc[-1]
 
