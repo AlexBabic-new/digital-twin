@@ -36,8 +36,8 @@ tab1, tab2, tab3 = st.tabs(["📊 Dashboard", "📜 Logs", "📈 Graphs"])
 with tab1:
     st.subheader("📥 Enter Sensor Data")
 
-    # 🔥 TESTNI ALERT – da odmah vidiš da sve radi
-    st.warning("🚨 TEST ALERT: If you see this Streamlite Alert is working!")
+    # 🔥 TEST ALERT – odmah prikazan da proveriš da sve radi
+    st.warning("🚨 TEST ALERT: Ako vidiš ovo, Streamlit alerti rade!")
 
     with st.form("sensor_input_form"):
         col1, col2, col3 = st.columns(3)
@@ -61,7 +61,7 @@ with tab1:
     data = fetch_all_readings()
     df = pd.DataFrame(data, columns=["ID", "Timestamp", "Temperature (°C)", "Humidity (%)", "pH"])
 
-    # === OKOLINA PERTHA – dozvoljene vrednosti ===
+    # === ALERT SYSTEM for Perth ===
     if not df.empty:
         latest = df.iloc[-1]
 
@@ -69,17 +69,20 @@ with tab1:
         humidity = latest["Humidity (%)"]
         ph = latest["pH"]
 
-        # Temperature range for Perth farming (ideal)
+        # Temperature alert
         if temp < 10 or temp > 35:
-            st.error(f"🔥 Temperature outside ideal range! Current: {temp}°C (Ideal: 10–35°C)")
+            st.error(f"🔥 CRITICAL: Temperature out of range! ({temp}°C) Ideal: 10–35°C")
+            st.toast(f"🔥 Temperature alert! Current: {temp}°C")
 
-        # Humidity range for Perth farming (ideal)
+        # Humidity alert
         if humidity < 30 or humidity > 70:
-            st.warning(f"💧 Humidity outside ideal range! Current: {humidity}% (Ideal: 30–70%)")
+            st.warning(f"⚠️ WARNING: Humidity out of range! ({humidity}%) Ideal: 30–70%")
+            st.toast(f"💧 Humidity alert! Current: {humidity}%")
 
-        # pH range for Perth farming (ideal)
+        # pH alert
         if ph < 5.5 or ph > 7.5:
-            st.info(f"🧪 pH outside ideal range! Current: {ph} (Ideal: 5.5–7.5)")
+            st.info(f"ℹ️ INFO: pH slightly off! ({ph}) Ideal: 5.5–7.5")
+            st.toast(f"🧪 pH alert! Current: {ph}")
 
     st.subheader("📦 Sensor Data Table")
     st.dataframe(df)
