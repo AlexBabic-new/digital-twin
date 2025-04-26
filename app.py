@@ -4,15 +4,32 @@ from datetime import datetime
 from log import log_event, get_last_events
 from database import init_db, insert_reading, fetch_all_readings
 import matplotlib.pyplot as plt
+import requests
 
-# Initialize database
+# === Weather Function ===
+def get_weather(city="Perth"): 
+    try:
+        api_key = st.secrets["weather_api_key"]
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+        res = requests.get(url).json()
+        temp = res["main"]["temp"]
+        desc = res["weather"][0]["description"].capitalize()
+        return f"{city}: {temp}°C, {desc}"
+    except Exception as e:
+        return f"Could not fetch weather data: {e}"
+
+# === Initialize database ===
 init_db()
 
-# Load initial data from DB
+# === Sidebar Weather ===
+st.sidebar.markdown("☁️ **Current Weather**")
+st.sidebar.write(get_weather("Perth"))
+
+# === Load initial data from DB ===
 data = fetch_all_readings()
 df = pd.DataFrame(data, columns=["ID", "Timestamp", "Temperature (°C)", "Humidity (%)", "pH"])
 
-# Tabs layout
+# === Tabs layout ===
 tab1, tab2, tab3 = st.tabs(["📊 Dashboard", "📜 Logs", "📈 Graphs"])
 
 # === TAB 1: Dashboard ===
@@ -79,6 +96,3 @@ with tab3:
         st.pyplot(fig)
     else:
         st.info("No data to plot yet.")
-
-
-
