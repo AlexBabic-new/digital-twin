@@ -37,7 +37,7 @@ with tab1:
     st.subheader("📥 Enter Sensor Data")
 
     # 🔥 TESTNI ALERT – da odmah vidiš da sve radi
-    st.warning("🚨 TEST ALERT: Ako vidiš ovo, Streamlit alerti rade!")
+    st.warning("🚨 TEST ALERT: If you see this Streamlite Alert is working!")
 
     with st.form("sensor_input_form"):
         col1, col2, col3 = st.columns(3)
