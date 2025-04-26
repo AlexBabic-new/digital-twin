@@ -57,6 +57,21 @@ with tab1:
     # Refresh data after submission
     data = fetch_all_readings()
     df = pd.DataFrame(data, columns=["ID", "Timestamp", "Temperature (°C)", "Humidity (%)", "pH"])
+    
+    # === ALERT SYSTEM BASED ON LAST ENTRY ===
+        if not df.empty:
+    latest = df.iloc[-1]  # poslednji unos
+
+    temp = latest["Temperature (°C)"]
+    humidity = latest["Humidity (%)"]
+    ph = latest["pH"]
+
+    if temp > 40:
+        st.error(f"🔥 ALERT: Temperature is too high! ({temp}°C)")
+    if humidity < 30:
+        st.info(f"💧 Low humidity detected: {humidity}%")
+    if ph < 5:
+        st.warning(f"🧪 Warning: pH is too low! ({ph})")
 
     st.subheader("📦 Sensor Data Table")
     st.dataframe(df)
