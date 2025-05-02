@@ -67,21 +67,21 @@ with tab1:
             st.metric("Temperature", f"{current_temp} °C")
             if st.button("Weather Info"):
                 st.session_state.view = "weather"
-                st.rerun()
+                st.experimental_rerun()
 
         with col2:
             st.image(field_image_url)
             st.success("Soil moisture is normal")
             if st.button("Soil Moisture"):
                 st.session_state.view = "moisture"
-                st.rerun()
+                st.experimental_rerun()
 
         with col3:
             st.image(monkey_image_url)
             st.info("No intruder detected")
             if st.button("Animal Presence"):
                 st.session_state.view = "animals"
-                st.rerun()
+                st.experimental_rerun()
 
     elif st.session_state.view == "weather":
         current_temp, current_desc, forecast = get_weather("Perth")
@@ -92,21 +92,21 @@ with tab1:
             st.write(f"{time}: {temp} °C")
         if st.button("⬅️ Back"):
             st.session_state.view = "home"
-            st.rerun()
+            st.experimental_rerun()
 
     elif st.session_state.view == "moisture":
         st.image(field_image_url)
         st.warning("⚠️ Soil moisture low. Irrigation needed.")
         if st.button("⬅️ Back"):
             st.session_state.view = "home"
-            st.rerun()
+            st.experimental_rerun()
 
     elif st.session_state.view == "animals":
         st.image(deer_image_url)
         st.success("Animal detected at 07:00 - Deer")
         if st.button("⬅️ Back"):
             st.session_state.view = "home"
-            st.rerun()
+            st.experimental_rerun()
 
 # === TAB 2: SETTINGS ===
 with tab2:
@@ -144,4 +144,6 @@ with tab2:
             st.text(log)
 
     if st.button("⬅️ Back to Home"):
-        st.switch_page("/")
+        st.session_state.view = "home"
+        st.experimental_rerun()
+
