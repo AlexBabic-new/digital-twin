@@ -21,7 +21,7 @@ def get_weather(city="Perth"):
     except Exception as e:
         return None, "Weather data unavailable", []
 
-# === Load an image from a URL safely ===
+# === Load an image from a file safely ===
 def load_image_from_file(path):
     try:
         return Image.open(path)
@@ -48,11 +48,11 @@ if "settings_tab" not in st.session_state:
     st.session_state.settings_tab = ""
 
 # === Tabs ===
-tab1, tab2 = st.tabs(["🏡 Home", "⚙️ Settings Info"])
+tab1, tab2 = st.tabs(["\U0001F3E1 Home", "\u2699\ufe0f Settings Info"])
 
 # === TAB 1: HOME ===
 with tab1:
-    st.title("🌾 Digital Twin - Smart Farm Dashboard")
+    st.title("\U0001F33E Digital Twin - Smart Farm Dashboard")
 
     if st.session_state.view == "home":
         st.markdown("### Click an icon for more information:")
@@ -104,7 +104,7 @@ with tab1:
 # === TAB 2: SETTINGS ===
 with tab2:
     current_temp, current_desc, _ = get_weather("Perth")
-    st.sidebar.title("🌦️ Current Weather")
+    st.sidebar.title("\U0001F326️ Current Weather")
     if current_temp:
         st.sidebar.write(f"{current_temp} °C, {current_desc.capitalize()}")
 
@@ -115,23 +115,23 @@ with tab2:
     df = pd.DataFrame(data, columns=["ID", "Timestamp", "Temperature (°C)", "Humidity (%)", "pH"])
 
     if selection == "Temperature" and not df.empty:
-        st.subheader("🌡️ Temperature Overview")
+        st.subheader("\U0001F321️ Temperature Overview")
         st.line_chart(df.set_index("Timestamp")["Temperature (°C)"])
 
     elif selection == "Humidity" and not df.empty:
-        st.subheader("💧 Humidity Overview")
+        st.subheader("\U0001F4A7 Humidity Overview")
         st.line_chart(df.set_index("Timestamp")["Humidity (%)"])
 
     elif selection == "pH" and not df.empty:
-        st.subheader("🧪 pH Values")
+        st.subheader("\U0001F9EA pH Values")
         st.line_chart(df.set_index("Timestamp")["pH"])
 
     elif selection == "Soil Quality":
-        st.subheader("🌱 Soil Quality Info")
+        st.subheader("\U0001F331 Soil Quality Info")
         st.info("(Placeholder for future implementation of soil quality assessments)")
 
     elif selection == "Logs":
-        st.subheader("📜 Event Logs")
+        st.subheader("\U0001F4DC Event Logs")
         logs = get_last_events()
         for log in logs:
             st.text(log)
@@ -139,4 +139,3 @@ with tab2:
     st.markdown("---")
     if st.button("⬅️ Back to Home"):
         st.session_state.view = "home"
-        st.experimental_rerun()
