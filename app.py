@@ -139,3 +139,4 @@ with tab2:
 
     if st.button("⬅️ Back to Home"):
         st.session_state.view = "home"
+        st.experimental_rerun()
