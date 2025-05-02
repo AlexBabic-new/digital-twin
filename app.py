@@ -22,26 +22,24 @@ def get_weather(city="Perth"):
         return None, "Weather data unavailable", []
 
 # === Load an image from a URL safely ===
-def load_image(url):
+def load_image_from_file(path):
     try:
-        response = requests.get(url)
-        img = Image.open(BytesIO(response.content))
-        return img
+        return Image.open(path)
     except:
         return None
 
 # === Initialize database ===
 init_db()
 
-# === Image URLs ===
-sun_image_url = "https://upload.wikimedia.org/wikipedia/commons/e/e0/SNice.svg"
-snow_image_url = "https://upload.wikimedia.org/wikipedia/commons/9/9e/Snow_flake_icon.svg"
-rain_image_url = "https://upload.wikimedia.org/wikipedia/commons/5/5b/Rain_icon.svg"
-cloud_image_url = "https://upload.wikimedia.org/wikipedia/commons/7/75/Weather-few-clouds.svg"
-monkey_image_url = "https://upload.wikimedia.org/wikipedia/commons/5/5f/Monkey_portrait_02.jpg"
-deer_image_url = "https://upload.wikimedia.org/wikipedia/commons/3/34/White-tailed_deer.jpg"
-boar_image_url = "https://upload.wikimedia.org/wikipedia/commons/b/b7/Wild_boar_Bieszczady.jpg"
-field_image_url = "https://upload.wikimedia.org/wikipedia/commons/1/1d/Wheat_field_2013.jpg"
+# === Local image paths ===
+sun_image_path = "split_images/sun.jpg"
+snow_image_path = "split_images/snow.jpg.webp"
+rain_image_path = "split_images/rain.webp"
+cloud_image_path = "split_images/sun-cloud.jpg.webp"
+monkey_image_path = "split_images/monkey.jpg.webp"
+deer_image_path = "split_images/deer.jpg"
+boar_image_path = "split_images/boar.jpg"
+field_image_path = "split_images/rice_field.png"
 
 # === Session state ===
 if "view" not in st.session_state:
@@ -63,26 +61,27 @@ with tab1:
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            st.image(sun_image_url)
+            st.image(load_image_from_file(sun_image_path))
             st.metric("Temperature", f"{current_temp} °C")
             if st.button("Weather Info"):
                 st.session_state.view = "weather"
 
         with col2:
-            st.image(field_image_url)
+            st.image(load_image_from_file(field_image_path))
             st.success("Soil moisture is normal")
             if st.button("Soil Moisture"):
                 st.session_state.view = "moisture"
 
         with col3:
-            st.image(monkey_image_url)
-            st.info("No intruder detected")
+            animal_image = load_image_from_file(deer_image_path)
+            st.image(animal_image)
+            st.info("Animal detected at 07:00 - Deer")
             if st.button("Animal Presence"):
                 st.session_state.view = "animals"
 
     elif st.session_state.view == "weather":
         current_temp, current_desc, forecast = get_weather("Perth")
-        st.image(cloud_image_url)
+        st.image(load_image_from_file(cloud_image_path))
         st.info(f"Current: {current_temp} °C, {current_desc.capitalize()}")
         st.write("### Forecast")
         for time, temp in forecast:
@@ -91,13 +90,13 @@ with tab1:
             st.session_state.view = "home"
 
     elif st.session_state.view == "moisture":
-        st.image(field_image_url)
+        st.image(load_image_from_file(field_image_path))
         st.warning("⚠️ Soil moisture low. Irrigation needed.")
         if st.button("⬅️ Back"):
             st.session_state.view = "home"
 
     elif st.session_state.view == "animals":
-        st.image(deer_image_url)
+        st.image(load_image_from_file(deer_image_path))
         st.success("Animal detected at 07:00 - Deer")
         if st.button("⬅️ Back"):
             st.session_state.view = "home"
@@ -139,4 +138,5 @@ with tab2:
 
     st.markdown("---")
     if st.button("⬅️ Back to Home"):
-        st.session_state.view = "home"
+    st.session_state.view = "home"
+    st.experimental_rerun()
