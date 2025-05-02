@@ -27,34 +27,35 @@ def load_image(url):
         response = requests.get(url)
         img = Image.open(BytesIO(response.content))
         return img
-    except UnidentifiedImageError:
+    except:
         return None
 
 # === Initialize database ===
 init_db()
 
-# === Image URLs for visualization (valid) ===
-sun_image_url = "https://i.ibb.co/4W2DGKm/sun.png"
-snow_image_url = "https://i.ibb.co/NK4fyH5/snow.png"
-rain_image_url = "https://i.ibb.co/hKRcTzw/rain.png"
-cloud_image_url = "https://i.ibb.co/mT1v2cJ/cloud.png"
-animal_image_url = "https://i.ibb.co/yg3TTZF/animal.png"
+# === Image URLs ===
+sun_image_url = "https://i.imgur.com/V7xQwOw.png"
+snow_image_url = "https://i.imgur.com/Nz5X28P.png"
+rain_image_url = "https://i.imgur.com/N6Z8X4h.png"
+cloud_image_url = "https://i.imgur.com/hKnpvK2.png"
+monkey_image_url = "https://i.ibb.co/HHcZD5s/monkey.png"
+deer_image_url = "https://i.ibb.co/jT0nKbF/deer.png"
+boar_image_url = "https://i.ibb.co/vhV7n6H/boar.png"
 field_image_url = "https://i.ibb.co/fMQKZFm/soil.png"
 
-# === Session state setup ===
+# === Session state ===
 if "view" not in st.session_state:
     st.session_state.view = "home"
 if "settings_tab" not in st.session_state:
-    st.session_state.settings_tab = "Temperature"
+    st.session_state.settings_tab = ""
 
-# === Create two main tabs: Home and Settings Info ===
+# === Tabs ===
 tab1, tab2 = st.tabs(["🏡 Home", "⚙️ Settings Info"])
 
-# === TAB 1: Main Dashboard ===
+# === TAB 1: HOME ===
 with tab1:
     st.title("🌾 Digital Twin - Smart Farm Dashboard")
 
-    # === HOME VIEW ===
     if st.session_state.view == "home":
         st.markdown("### Click an icon for more information:")
         current_temp, current_desc, _ = get_weather("Perth")
@@ -62,104 +63,85 @@ with tab1:
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            img = load_image(cloud_image_url)
-            if img:
-                st.image(img, use_column_width=True)
-            st.metric(label="🌡️ Temperature", value=f"{current_temp} °C")
+            st.image(sun_image_url)
+            st.metric("Temperature", f"{current_temp} °C")
             if st.button("Weather Info"):
                 st.session_state.view = "weather"
+                st.rerun()
 
         with col2:
-            img = load_image(field_image_url)
-            if img:
-                st.image(img, use_column_width=True)
-            st.success("✅ Soil moisture is normal")
+            st.image(field_image_url)
+            st.success("Soil moisture is normal")
             if st.button("Soil Moisture"):
                 st.session_state.view = "moisture"
+                st.rerun()
 
         with col3:
-            img = load_image(animal_image_url)
-            if img:
-                st.image(img, use_column_width=True)
-            st.info("🟢 No intruder detected")
+            st.image(monkey_image_url)
+            st.info("No intruder detected")
             if st.button("Animal Presence"):
                 st.session_state.view = "animals"
+                st.rerun()
 
-    # === WEATHER DETAIL VIEW ===
     elif st.session_state.view == "weather":
         current_temp, current_desc, forecast = get_weather("Perth")
-        if current_temp is not None:
-            if current_temp < 10:
-                img = load_image(snow_image_url)
-            elif "rain" in current_desc:
-                img = load_image(rain_image_url)
-            elif "cloud" in current_desc:
-                img = load_image(cloud_image_url)
-            else:
-                img = load_image(sun_image_url)
-            if img:
-                st.image(img)
-            st.info(f"Current: {current_temp} °C, {current_desc.capitalize()}")
-            st.write("### Forecast:")
-            for time, temp in forecast:
-                st.write(f"{time}: {temp} °C")
+        st.image(cloud_image_url)
+        st.info(f"Current: {current_temp} °C, {current_desc.capitalize()}")
+        st.write("### Forecast")
+        for time, temp in forecast:
+            st.write(f"{time}: {temp} °C")
         if st.button("⬅️ Back"):
             st.session_state.view = "home"
+            st.rerun()
 
-    # === MOISTURE DETAIL VIEW ===
     elif st.session_state.view == "moisture":
-        img = load_image(field_image_url)
-        if img:
-            st.image(img)
-        st.warning("⚠️ Soil moisture low. Irrigation required.")
+        st.image(field_image_url)
+        st.warning("⚠️ Soil moisture low. Irrigation needed.")
         if st.button("⬅️ Back"):
             st.session_state.view = "home"
+            st.rerun()
 
-    # === ANIMAL DETAIL VIEW ===
     elif st.session_state.view == "animals":
-        img = load_image(animal_image_url)
-        if img:
-            st.image(img)
-        st.success("Animal detected at 07:00 - Animal 2")
+        st.image(deer_image_url)
+        st.success("Animal detected at 07:00 - Deer")
         if st.button("⬅️ Back"):
             st.session_state.view = "home"
+            st.rerun()
 
-# === TAB 2: Settings Info ===
+# === TAB 2: SETTINGS ===
 with tab2:
-    st.sidebar.title("🌦️ Current Weather")
     current_temp, current_desc, _ = get_weather("Perth")
-    if current_temp is not None:
+    st.sidebar.title("🌦️ Current Weather")
+    if current_temp:
         st.sidebar.write(f"{current_temp} °C, {current_desc.capitalize()}")
-    else:
-        st.sidebar.warning("Weather data unavailable.")
 
-    tabs = st.radio("Select Data View", ["Temperature", "Humidity", "pH", "Soil Quality", "Logs"])
+    selection = st.radio("Select Data View", ["Temperature", "Humidity", "pH", "Soil Quality", "Logs"])
+    st.session_state.settings_tab = selection
 
     data = fetch_all_readings()
     df = pd.DataFrame(data, columns=["ID", "Timestamp", "Temperature (°C)", "Humidity (%)", "pH"])
 
-    if tabs == "Temperature" and not df.empty:
+    if selection == "Temperature" and not df.empty:
         st.subheader("🌡️ Temperature Overview")
         st.line_chart(df.set_index("Timestamp")["Temperature (°C)"])
 
-    elif tabs == "Humidity" and not df.empty:
+    elif selection == "Humidity" and not df.empty:
         st.subheader("💧 Humidity Overview")
         st.line_chart(df.set_index("Timestamp")["Humidity (%)"])
 
-    elif tabs == "pH" and not df.empty:
+    elif selection == "pH" and not df.empty:
         st.subheader("🧪 pH Values")
         st.line_chart(df.set_index("Timestamp")["pH"])
 
-    elif tabs == "Soil Quality":
+    elif selection == "Soil Quality":
         st.subheader("🌱 Soil Quality Info")
         st.info("(Placeholder for future implementation of soil quality assessments)")
 
-    elif tabs == "Logs":
+    elif selection == "Logs":
         st.subheader("📜 Event Logs")
         logs = get_last_events()
         for log in logs:
             st.text(log)
 
     if st.button("⬅️ Back to Home"):
-        st.session_state.view = "home"
-        st.experimental_rerun()
+        st.switch_page("/")
