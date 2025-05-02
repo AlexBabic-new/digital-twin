@@ -139,4 +139,4 @@ with tab2:
     st.markdown("---")
     if st.button("⬅️ Back to Home"):
         st.session_state.view = "home"
-         st.experimental_rerun()
+        st.experimental_rerun()
