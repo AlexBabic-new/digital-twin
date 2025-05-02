@@ -137,6 +137,8 @@ with tab2:
         for log in logs:
             st.text(log)
 
+    st.markdown("---")
     if st.button("⬅️ Back to Home"):
         st.session_state.view = "home"
         st.experimental_rerun()
+    st.caption("⬅️ Back Home")
