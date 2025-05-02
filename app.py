@@ -1,137 +1,119 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-from log import log_event, get_last_events
-from database import init_db, insert_reading, fetch_all_readings
 import matplotlib.pyplot as plt
 import requests
+from PIL import Image
+from io import BytesIO
+from log import log_event, get_last_events
+from database import init_db, insert_reading, fetch_all_readings
 
-# === Weather Function ===
-def get_weather(city="Perth"): 
+# === Fetch weather data from OpenWeather API ===
+def get_weather(city="Perth"):
     try:
         api_key = st.secrets["weather_api_key"]
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
         res = requests.get(url).json()
         temp = res["main"]["temp"]
-        desc = res["weather"][0]["description"].capitalize()
-        return f"{city}: {temp}°C, {desc}"
+        desc = res["weather"][0]["main"].lower()
+        return temp, desc
     except Exception as e:
-        return f"Could not fetch weather data: {e}"
+        return None, "Weather data unavailable"
+
+# === Load an image from a URL ===
+def load_image(url):
+    response = requests.get(url)
+    return Image.open(BytesIO(response.content))
 
 # === Initialize database ===
 init_db()
 
-# === Sidebar Weather ===
-st.sidebar.markdown("☁️ **Current Weather**")
-st.sidebar.write(get_weather("Perth"))
+# === Image URLs for visualization ===
+sun_image_url = "https://i.imgur.com/V7xQwOw.png"
+snow_image_url = "https://i.imgur.com/Nz5X28P.png"
+rain_image_url = "https://i.imgur.com/N6Z8X4h.png"
+cloud_image_url = "https://i.imgur.com/hKnpvK2.png"
+animal_image_url = "https://i.imgur.com/64lAFmE.png"
+field_image_url = "https://i.imgur.com/PGqQ8td.png"
 
-# === Load initial data from DB ===
-data = fetch_all_readings()
-df = pd.DataFrame(data, columns=["ID", "Timestamp", "Temperature (°C)", "Humidity (%)", "pH"])
+# === Create two main tabs: Home and Settings Info ===
+tab1, tab2 = st.tabs(["🏡 Home", "⚙️ Settings Info"])
 
-# === Tabs layout ===
-tab1, tab2, tab3 = st.tabs(["📊 Dashboard", "📜 Logs", "📈 Graphs"])
-
-# === TAB 1: Dashboard ===
+# === TAB 1: Home (Clickable dashboard icons) ===
 with tab1:
-    st.subheader("📥 Enter Sensor Data")
+    st.title("🌾 Digital Twin - Smart Farm Dashboard")
+    st.markdown("### Click an icon for more information:")
 
-    # 🔥 TEST ALERT – odmah prikazan da proveriš da sve radi
-    st.warning("🚨 TEST ALERT: Ako vidiš ovo, Streamlit alerti rade!")
+    current_temp, current_desc = get_weather("Perth")
 
-    with st.form("sensor_input_form"):
-        col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
 
-        with col1:
-            temperature_input = st.number_input("🌡️ Temperature (°C)", min_value=-50.0, max_value=100.0, value=22.4, step=0.1)
-        with col2:
-            humidity_input = st.number_input("💧 Humidity (%)", min_value=0.0, max_value=100.0, value=50.0, step=0.1)
-        with col3:
-            ph_input = st.number_input("🧪 pH Level", min_value=0.0, max_value=14.0, value=7.0, step=0.1)
+    # Weather Icon
+    with col1:
+        if st.button("🌤️ Weather Info"):
+            if current_temp is not None:
+                if current_temp < 10:
+                    img = load_image(snow_image_url)
+                elif "rain" in current_desc:
+                    img = load_image(rain_image_url)
+                elif "cloud" in current_desc:
+                    img = load_image(cloud_image_url)
+                else:
+                    img = load_image(sun_image_url)
+                st.image(img, caption=f"{current_temp} °C, {current_desc.capitalize()}")
+                st.info(f"Temperature: {current_temp} °C | Condition: {current_desc.capitalize()}")
+                if st.button("⬅️ Back", key="weather_back"):
+                    st.experimental_rerun()
 
-        submitted = st.form_submit_button("📩 Submit")
+    # Soil Moisture Icon
+    with col2:
+        if st.button("🌾 Soil Moisture"):
+            img_field = load_image(field_image_url)
+            st.image(img_field, caption="Soil Moisture Status")
+            st.warning("⚠️ Soil moisture is decreasing. Irrigation recommended soon!")
+            if st.button("⬅️ Back", key="field_back"):
+                st.experimental_rerun()
 
-    if submitted:
-        insert_reading(temperature_input, humidity_input, ph_input)
-        log_event(f"Manual input: T={temperature_input}, H={humidity_input}, pH={ph_input}")
-        st.success("Sensor data submitted and logged!")
-        st.rerun()
+    # Animal Detection Icon
+    with col3:
+        if st.button("🐾 Animal Presence"):
+            img_animal = load_image(animal_image_url)
+            st.image(img_animal, caption="Animal Detection")
+            st.success("✅ Animal 1 at 07:00 | Animal 2 at 08:15")
+            if st.button("⬅️ Back", key="animal_back"):
+                st.experimental_rerun()
 
-    # Refresh data
+# === TAB 2: Settings Info (Original sensor dashboard) ===
+with tab2:
+    st.sidebar.title("🌦️ Current Weather")
+    if current_temp is not None:
+        st.sidebar.write(f"{current_temp} °C, {current_desc.capitalize()}")
+    else:
+        st.sidebar.warning("Weather data unavailable.")
+
+    st.header("📈 Real-Time Sensor Dashboard")
+
+    # Load sensor data from the database
     data = fetch_all_readings()
     df = pd.DataFrame(data, columns=["ID", "Timestamp", "Temperature (°C)", "Humidity (%)", "pH"])
 
-    # === ALERT SYSTEM for Perth ===
     if not df.empty:
         latest = df.iloc[-1]
-
         temp = latest["Temperature (°C)"]
         humidity = latest["Humidity (%)"]
         ph = latest["pH"]
 
-        # Temperature alert
+        # Alert users when readings are out of optimal range
         if temp < 10 or temp > 35:
-            st.error(f"🔥 CRITICAL: Temperature out of range! ({temp}°C) Ideal: 10–35°C")
-            st.toast(f"🔥 Temperature alert! Current: {temp}°C")
-
-        # Humidity alert
+            st.error(f"🔥 CRITICAL: Temperature out of range ({temp} °C)")
+            st.toast(f"🔥 Temperature alert: {temp} °C")
         if humidity < 30 or humidity > 70:
-            st.warning(f"⚠️ WARNING: Humidity out of range! ({humidity}%) Ideal: 30–70%")
-            st.toast(f"💧 Humidity alert! Current: {humidity}%")
-
-        # pH alert
+            st.warning(f"⚠️ WARNING: Humidity out of range ({humidity}%)")
+            st.toast(f"💧 Humidity alert: {humidity}%")
         if ph < 5.5 or ph > 7.5:
-            st.info(f"ℹ️ INFO: pH slightly off! ({ph}) Ideal: 5.5–7.5")
-            st.toast(f"🧪 pH alert! Current: {ph}")
+            st.info(f"ℹ️ INFO: pH slightly off the ideal range ({ph})")
+            st.toast(f"🧪 pH alert: {ph}")
 
-    st.subheader("📦 Sensor Data Table")
-    st.dataframe(df)
-
-    st.subheader("📥 Export Sensor Data")
-    csv = df.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="⬇️ Download as CSV",
-        data=csv,
-        file_name="sensor_data.csv",
-        mime="text/csv"
-    )
-
-# === TAB 2: Logs ===
-with tab2:
-    st.subheader("🔔 Simulate Event")
-    if st.button("Log Simulated Event"):
-        log_event("Simulated sensor event")
-        st.success("Event logged successfully!")
-
-    st.subheader("📜 Recent Log Events")
-    last_logs = get_last_events()
-    for line in last_logs:
-        st.text(line.strip())
-
-# === TAB 3: Graphs ===
-with tab3:
-    st.subheader("📈 Temperature Over Time")
-
-    if not df.empty:
-        fig, ax = plt.subplots()
-        ax.plot(df["Timestamp"], df["Temperature (°C)"], marker='o', color='tomato')
-        ax.set_xlabel("Timestamp")
-        ax.set_ylabel("Temperature (°C)")
-        ax.set_title("Temperature Trend")
-        ax.tick_params(axis='x', rotation=45)
-        st.pyplot(fig)
+        st.dataframe(df)
     else:
-        st.info("No temperature data to plot yet.")
-
-    st.subheader("📉 Humidity Over Time")
-
-    if not df.empty:
-        fig, ax = plt.subplots()
-        ax.plot(df["Timestamp"], df["Humidity (%)"], marker='o', color='skyblue')
-        ax.set_xlabel("Timestamp")
-        ax.set_ylabel("Humidity (%)")
-        ax.set_title("Humidity Trend")
-        ax.tick_params(axis='x', rotation=45)
-        st.pyplot(fig)
-    else:
-        st.info("No humidity data to plot yet.")
+        st.info("No sensor data available yet.")
