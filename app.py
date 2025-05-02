@@ -38,9 +38,9 @@ sun_image_url = "https://i.imgur.com/V7xQwOw.png"
 snow_image_url = "https://i.imgur.com/Nz5X28P.png"
 rain_image_url = "https://i.imgur.com/N6Z8X4h.png"
 cloud_image_url = "https://i.imgur.com/hKnpvK2.png"
-monkey_image_url = "https://i.ibb.co/HHcZD5s/monkey.png"
-deer_image_url = "https://i.ibb.co/jT0nKbF/deer.png"
-boar_image_url = "https://i.ibb.co/vhV7n6H/boar.png"
+monkey_image_url = "https://upload.wikimedia.org/wikipedia/commons/5/5f/Monkey_portrait_02.jpg"
+deer_image_url = "https://upload.wikimedia.org/wikipedia/commons/3/34/White-tailed_deer.jpg"
+boar_image_url = "https://upload.wikimedia.org/wikipedia/commons/b/b7/Wild_boar_Bieszczady.jpg"
 field_image_url = "https://i.ibb.co/fMQKZFm/soil.png"
 
 # === Session state ===
@@ -145,5 +145,3 @@ with tab2:
 
     if st.button("⬅️ Back to Home"):
         st.session_state.view = "home"
-        st.experimental_rerun()
-
