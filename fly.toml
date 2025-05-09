@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for digital-twin on 2025-05-09T02:35:15Z
+# fly.toml app configuration file generated for digital-twin-zw-big on 2025-05-09T06:23:43Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'digital-twin'
+app = 'digital-twin-zw-big'
 primary_region = 'syd'
 
 [build]
