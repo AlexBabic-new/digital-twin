@@ -3,7 +3,7 @@
 This project is a simulated digital twin system for monitoring rice field conditions, designed as a prototype for future IoT integration. It includes a Streamlit-based dashboard, image-driven animal detection, and modular architecture for eventual connection to real sensors (e.g., via MQTT or LoRaWAN).
 
 
-## 📦 Project Structure
+##  Project Structure
 
 ```plaintext
 digital-twin/
@@ -21,14 +21,14 @@ digital-twin/
 ```
 
 
-## 📡 Technologies Used
+##  Technologies Used
 
-### ✅ Currently used:
+###  Currently used:
 - **Streamlit** – interactive dashboard UI
 - **Python** – logic and backend handling
 - **Local image-based simulation** – for prototyping detection flow
 
-### 🧩 Planned for integration:
+###  Planned for integration:
 - **Raspberry Pi + BME688 sensors**
 - **LoRaWAN** – for long-range transmission
 - **MQTT (Mosquitto)** – for real-time sensor messaging
@@ -36,26 +36,26 @@ digital-twin/
 - **Fly.io or Streamlit Cloud** – for deployment
 
 
-## 🐾 Animal Detection Logic (Updated: May 2025)
+##  Animal Detection Logic (Updated: May 2025)
 
 This prototype simulates animal presence on a farm using static image placeholders and a simple control file.
 
-### ✅ Features
+###  Features
 - Dashboard loads animal images dynamically based on the value in `animal.txt`
 - CLI script `set_animal.py` simulates detection (choose: Monkey, Deer, Boar)
 - Automatically updates image in dashboard
 - Compatible with future sensor-based triggers or AI models
 
 
-## 🚀 How to Use the Simulation
+##  How to Use the Simulation
 
-### ▶️ Step 1: Start the Dashboard
+### ▶ Step 1: Start the Dashboard
 
 ```bash
 streamlit run app.py
 ```
 
-### ▶️ Step 2: Simulate Animal Detection
+### ▶ Step 2: Simulate Animal Detection
 
 Open a second terminal and run:
 
@@ -67,15 +67,15 @@ python3 set_animal.py
 After a few seconds, the dashboard will refresh and display the selected animal image.
 
 
-## 🧪 Future Enhancements
+##  Future Enhancements
 
-- 🔌 Replace `set_animal.py` with MQTT-based sensor input
-- 🧠 Integrate AI model for real-time animal classification
-- ☁️ Add Fly.io or Streamlit Cloud auto-deploy
-- 📊 Store detection events and timestamps in a structured database
+-  Replace `set_animal.py` with MQTT-based sensor input
+-  Integrate AI model for real-time animal classification
+-  Add Fly.io or Streamlit Cloud auto-deploy
+-  Store detection events and timestamps in a structured database
 
 
-## 📥 How to Run Locally
+##  How to Run Locally
 
 ```bash
 git clone https://github.com/your-username/digital-twin.git
@@ -85,11 +85,11 @@ streamlit run app.py
 ```
 
 
-## 🧠 Notes
+##  Notes
 
 - This project currently **does not connect to physical sensors**.
 - The logic is structured to allow easy integration of sensor data in the next phase.
 - It is intended for **demonstration and educational purposes**.
 
 
-## ✨ Created by Aleksandar Babić – May 2025
+##  Created by Aleksandar Babić – May 2025
