@@ -1,56 +1,79 @@
 # 🌾 Bhutan Digital Twin – Smart Farming Dashboard
 
-This project is a real-time digital twin system for monitoring rice field conditions using sensor data and cloud visualization. It includes Streamlit dashboard, Raspberry Pi devices, LoRaWAN, MQTT communication, and Eclipse Ditto integration.
-
----
+This project is a simulated digital twin system for monitoring rice field conditions, designed as a prototype for future IoT integration. It includes a Streamlit-based dashboard, image-driven animal detection, and modular architecture for eventual connection to real sensors (e.g., via MQTT or LoRaWAN).
 
 ## 📦 Project Structure
 
-- `app.py` – Streamlit frontend for dashboard
-- `database.py` – SQLite storage for sensor data
-- `log.py` – Event logging module
-- `requirements.txt` – Python dependencies
-- `Dockerfile` – Optional Docker deployment (for Fly.io)
-- `.streamlit/secrets.toml` – Weather API keys
-- `README.md` – You're here!
-
----
+digital-twin/
+├── app.py # Streamlit frontend dashboard
+├── set_animal.py # CLI script to simulate animal presence
+├── animal.txt # Control file used to reflect current animal
+├── log.py # Event logging module
+├── database.py # SQLite storage for sensor readings
+├── requirements.txt # Python dependencies
+├── split_images/ # Animal and environment image assets
+│ ├── monkey.jpg.webp
+│ ├── deer.jpg
+│ └── boar.jpg
+└── .streamlit/secrets.toml # Contains weather API key (if used)
 
 ## 📡 Technologies Used
 
-- Raspberry Pi + BME688 sensors
-- LoRaWAN for long-range data transfer
-- MQTT protocol (Mosquitto broker)
-- Eclipse Ditto for digital twin model
-- Streamlit for web dashboard
-- Fly.io for cloud deployment
+> ✅ Currently used:
+- **Streamlit** – interactive dashboard UI
+- **Python** – logic and backend handling
+- **Local image-based simulation** – for prototyping detection flow
 
----
+> 🧩 Planned for integration:
+- **Raspberry Pi + BME688 sensors**
+- **LoRaWAN** – for long-range transmission
+- **MQTT (Mosquitto)** – for real-time sensor messaging
+- **Eclipse Ditto** – digital twin modeling
+- **Fly.io or Streamlit Cloud** – for deployment
+
 ## 🐾 Animal Detection Logic (Updated: May 2025)
 
-This project simulates animal presence detection on a smart farm using images and a control file (`animal.txt`).
+This prototype simulates animal presence on a farm using static image placeholders and a simple control file.
 
 ### ✅ Features
-- The dashboard UI is fully interactive with tabs and metrics.
-- Animal image is dynamically loaded based on the value inside `animal.txt`.
-- Script `set_animal.py` allows you to manually simulate animal detection (Monkey, Deer, Boar).
-- Animal images are stored in the `split_images/` directory.
-- Fully compatible with future sensor input integration (e.g., via MQTT).
+- Dashboard loads animal images dynamically based on the value in `animal.txt`
+- CLI script `set_animal.py` simulates detection (choose: Monkey, Deer, Boar)
+- Automatically updates image in dashboard
+- Compatible with future sensor-based triggers or AI models
 
-### 🚀 Example Usage
+## 🚀 How to Use the Simulation
+
+### ▶️ Step 1: Start the Dashboard
 
 ```bash
-# Run the main Streamlit dashboard
 streamlit run app.py
+▶️ Step 2: Simulate Animal Detection
+Open a second terminal and run:
 
-# In a separate terminal, run the script and input desired animal
 python3 set_animal.py
-# Enter: monkey
+# Enter one of: monkey, deer, boar
+After a few seconds, the dashboard will refresh and display the selected animal image.
+
+🧪 Future Enhancements
+
+🔌 Replace set_animal.py with MQTT-based sensor input
+🧠 Integrate AI model for real-time animal classification
+☁️ Add Fly.io or Streamlit Cloud auto-deploy
+📊 Store detection events and timestamps in a structured database
+📥 How to Run Locally
+
+git clone https://github.com/your-username/digital-twin.git
+cd digital-twin
+pip install -r requirements.txt
+streamlit run app.py
+🧠 Notes
+
+This project currently does not connect to physical sensors.
+The logic is structured to allow easy integration of sensor data in the next phase.
+It is intended for demonstration and educational purposes.
+✨ Created by Aleksandar Babić – May 2025
 
 
-## 🚀 How to Run Locally
-
-```bash
 git clone https://github.com/your-username/digital-twin.git
 cd digital-twin
 pip install -r requirements.txt
