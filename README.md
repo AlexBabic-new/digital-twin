@@ -26,6 +26,27 @@ This project is a real-time digital twin system for monitoring rice field condit
 - Fly.io for cloud deployment
 
 ---
+## 🐾 Animal Detection Logic (Updated: May 2025)
+
+This project simulates animal presence detection on a smart farm using images and a control file (`animal.txt`).
+
+### ✅ Features
+- The dashboard UI is fully interactive with tabs and metrics.
+- Animal image is dynamically loaded based on the value inside `animal.txt`.
+- Script `set_animal.py` allows you to manually simulate animal detection (Monkey, Deer, Boar).
+- Animal images are stored in the `split_images/` directory.
+- Fully compatible with future sensor input integration (e.g., via MQTT).
+
+### 🚀 Example Usage
+
+```bash
+# Run the main Streamlit dashboard
+streamlit run app.py
+
+# In a separate terminal, run the script and input desired animal
+python3 set_animal.py
+# Enter: monkey
+
 
 ## 🚀 How to Run Locally
 
