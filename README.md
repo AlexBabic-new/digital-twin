@@ -83,6 +83,19 @@ cd digital-twin
 pip install -r requirements.txt
 streamlit run app.py
 ```
+## 🧠 Image Classification (MobileNetV2)
+
+This project includes a modular implementation of **MobileNetV2** for image classification using pretrained weights from ImageNet.
+
+**Usage:**
+- Classifies rice field intruders like monkey, deer, or boar based on sample images.
+- Results are integrated into the Streamlit dashboard with live prediction output.
+
+**Model Location:**
+- The logic is located in `mobilenet/classify_image.py`.
+- To test locally:
+  ```bash
+  python3 mobilenet/test_classify.py
 
 
 ##  Notes
