@@ -100,7 +100,6 @@ This project includes a modular implementation of **MobileNetV2** for image clas
 
 ##  Notes
 
-- This project currently **does not connect to physical sensors**.
 - The logic is structured to allow easy integration of sensor data in the next phase.
 - It is intended for **demonstration and educational purposes**.
 
