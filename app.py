@@ -139,3 +139,4 @@ with tab2:
 st.markdown("---")
 if st.button("🔄 Refresh Screen"):
     st.session_state.view = "home"
+    st.rerun()
